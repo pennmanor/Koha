@@ -2525,9 +2525,9 @@ sub _ZOOM_event_loop {
     }
 }
 
-=head2 new_record_from_zebra
+=head2 new_record_from_searchengine
 
-Given raw data from a Zebra result set, return a MARC::Record object
+Given raw data from a searchengine result set, return a MARC::Record object
 
 This helper function is needed to take into account all the involved
 system preferences and configuration variables to properly create the
@@ -2535,6 +2535,8 @@ MARC::Record object.
 
 If we are using GRS-1, then the raw data we get from Zebra should be USMARC
 data. If we are using DOM, then it has to be MARCXML.
+
+If we are using elasticsearch, it'll already be a MARC::Record.
 
 =cut
 
@@ -2546,6 +2548,10 @@ sub new_record_from_zebra {
     my $index_mode = ( $server eq 'biblioserver' )
                         ? C4::Context->config('zebra_bib_index_mode') // 'dom'
                         : C4::Context->config('zebra_auth_index_mode') // 'dom';
+    my $search_engine = C4::Context->preference("SearchEngine");
+    if ($search_engine eq 'Elasticsearch') {
+        return $raw_data;
+    }
 
     my $marc_record =  eval {
         if ( $index_mode eq 'dom' ) {
