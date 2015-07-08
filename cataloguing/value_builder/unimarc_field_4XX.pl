@@ -34,6 +34,14 @@ use MARC::Record;
 use C4::Branch;    # GetBranches
 use C4::ItemType;
 
+use Koha::SearchEngine;
+use Koha::SearchEngine::Search;
+
+sub plugin_parameters {
+    my ( $dbh, $record, $tagslib, $i, $tabloop ) = @_;
+    return "";
+}
+
 sub plugin_javascript {
     my ( $dbh, $record, $tagslib, $field_number, $tabloop ) = @_;
     my $function_name = $field_number;
@@ -360,7 +368,8 @@ sub plugin {
             $op = 'and';
         }
         $search = 'kw:'.$search." $op mc-itemtype:".$itype if $itype;
-        my ( $errors, $results, $total_hits ) = SimpleSearch($search, $startfrom * $resultsperpage, $resultsperpage );
+        my $searcher = Koha::SearchEngine::Search->new({index => $Koha::SearchEngine::BIBLIOS_INDEX});
+        my ( $errors, $results, $total_hits ) = $searcher->simple_search_compat($search, $startfrom * $resultsperpage, $resultsperpage );
         if (defined $errors ) {
             $results = [];
         }

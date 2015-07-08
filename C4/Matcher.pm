@@ -23,6 +23,9 @@ use warnings;
 use C4::Context;
 use MARC::Record;
 
+use Koha::SearchEngine;
+use Koha::SearchEngine::Search;
+
 use vars qw($VERSION);
 
 BEGIN {
@@ -659,10 +662,9 @@ sub get_matches {
                     map { "$matchpoint->{'index'}$phr=$_" } @source_keys );
             }
 
-            require C4::Search;
-
+            my $searcher = Koha::SearchEngine::Search->new({index => $Koha::SearchEngine::BIBLIOS_INDEX});
             ( $error, $searchresults, $total_hits ) =
-              C4::Search::SimpleSearch( $query, 0, $max_matches );
+              $searcher->simple_search_compat( $query, 0, $max_matches );
         }
         elsif ( $self->{'record_type'} eq 'authority' ) {
             my $authresults;

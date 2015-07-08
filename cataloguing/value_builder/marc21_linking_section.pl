@@ -34,6 +34,9 @@ use MARC::Record;
 use C4::Branch;
 use C4::ItemType;
 
+use Koha::SearchEngine;
+use Koha::SearchEngine::Search;
+
 my $builder = sub {
     my ( $params ) = @_;
     my $function_name = $params->{id};
@@ -178,8 +181,13 @@ my $launcher = sub {
         } else {
             $op = 'and';
         }
+        my $searcher = Koha::SearchEngine::Search->new(
+            { index => $Koha::SearchEngine::BIBLIOS_INDEX } );
         $search = 'kw:' . $search . " $op mc-itemtype:" . $itype if $itype;
-        my ( $errors, $results, $total_hits ) = SimpleSearch( $search, $startfrom * $resultsperpage, $resultsperpage );
+        my ( $errors, $results, $total_hits ) =
+          $searcher->simple_search_compat( $search,
+            $startfrom * $resultsperpage,
+            $resultsperpage );
         if ( defined $errors ) {
             $results = [];
         }
