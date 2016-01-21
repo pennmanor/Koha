@@ -46,6 +46,7 @@ use C4::Members::Attributes qw(GetBorrowerAttributes);
 use Koha::Borrower::Debarments qw(GetDebarments IsDebarred);
 use Koha::DateUtils;
 use Koha::Database;
+use Koha::Borrowers;
 
 use Date::Calc qw(
   Today
@@ -84,6 +85,12 @@ if (!C4::Context->userenv && !$branch){
         # no branch set we can't issue
         print $query->redirect("/cgi-bin/koha/circ/selectbranchprinter.pl");
         exit;
+    }
+}
+
+if (C4::Context->preference("AutoSwitchPatron") ) {
+    if (Koha::Borrowers->search( { cardnumber => $query->param('barcode')} )->count() > 0) {
+        print $query->redirect("/cgi-bin/koha/circ/circulation.pl?findborrower=".$query->param('barcode'));
     }
 }
 

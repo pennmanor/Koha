@@ -2,6 +2,13 @@ Circulation:
 # FIXME: printcirculationslips is also omitted. It _technically_ could work, but C4::Print is HLT specific and needs a little bit of refactoring.
     Interface:
         -
+            - pref: AutoSwitchPatron
+              choices:
+                  yes: "Enable"
+                  no: "Don't enable"
+            - the automatic redirection to another patron when a patron barcode is scanned instead of a book. 
+            - This should not be enabled if you have overlapping patron and book barcodes.
+        -
             - pref: CircAutocompl
               choices:
                   yes: Try
