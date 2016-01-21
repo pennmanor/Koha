@@ -76,6 +76,34 @@
                                 </ul> <!-- / .dropdown-menu -->
                             </li> <!-- / .dropdown -->
                         [% END # / IF virtualshelves %]
+                            <li class="divider-vertical"></li>
+			    <li class="dropdown">
+			    	<a id="listmenu" class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"</a>
+					<i class="icon-home icon-white"></i>
+					<span class="listslabel">
+					[% IF ( mylibraryfirst ) %]
+						[% FOREACH BranchesLoo IN BranchesLoop %]
+							[% IF (BranchesLoo.selected) %]
+								[% BranchesLoo.branchname %]
+							[% END %]
+						[% END %]
+					[% ELSE %]
+						Buildings
+                                        [% END %]	
+					</span>
+					<b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu" role="menu">
+				[% FOREACH BranchesLoo IN BranchesLoop %]
+					[% IF (BranchesLoo.value != "REM") %]
+					  <li[% IF (BranchesLoo.selected) %] class="active"[% END %] role="presentation"><a role="menuitem" tabindex="-1" href="/cgi-bin/koha/opac-setbranch.pl?newbranch=[% BranchesLoo.value %]" [% IF (BranchesLoo.selected) %] class="active"[% END %] ><span>[% BranchesLoo.branchname %]</span></a>
+					[% END %]
+				[% END %]
+
+				</ul>
+			    </li>
+                            <li class="divider-vertical"></li>
+
                     </ul> <!-- / .nav -->
                     [% IF Koha.Preference( 'virtualshelves' ) == 1 %]<div id="listsDetails"></div>[% END %]
                     [% IF Koha.Preference( 'opacuserlogin' ) == 1 || opaclanguagesdisplay || EnableOpacSearchHistory %]
