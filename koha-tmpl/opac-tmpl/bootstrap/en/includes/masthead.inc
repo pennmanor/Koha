@@ -76,33 +76,42 @@
                                 </ul> <!-- / .dropdown-menu -->
                             </li> <!-- / .dropdown -->
                         [% END # / IF virtualshelves %]
-                            <li class="divider-vertical"></li>
-			    <li class="dropdown">
-			    	<a id="listmenu" class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"</a>
-					<i class="icon-home icon-white"></i>
-					<span class="listslabel">
-					[% IF ( mylibraryfirst ) %]
-						[% FOREACH BranchesLoo IN BranchesLoop %]
-							[% IF (BranchesLoo.selected) %]
-								[% BranchesLoo.branchname %]
-							[% END %]
-						[% END %]
-					[% ELSE %]
-						Buildings
-                                        [% END %]	
-					</span>
-					<b class="caret"></b>
-				</a>
-				<ul class="dropdown-menu" role="menu">
-				[% FOREACH BranchesLoo IN BranchesLoop %]
-					[% IF (BranchesLoo.value != "REM") %]
-					  <li[% IF (BranchesLoo.selected) %] class="active"[% END %] role="presentation"><a role="menuitem" tabindex="-1" href="/cgi-bin/koha/opac-setbranch.pl?newbranch=[% BranchesLoo.value %]" [% IF (BranchesLoo.selected) %] class="active"[% END %] ><span>[% BranchesLoo.branchname %]</span></a>
-					[% END %]
-				[% END %]
 
-				</ul>
-			    </li>
-                            <li class="divider-vertical"></li>
+                        [% IF Koha.Preference('SearchMyLibraryFirst') %]
+                            <li class="divider-vertical set-search-first-library"></li>
+                            <li class="dropdown set-search-first-library">
+                                <a id="listmenu" class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"</a>
+                                    <i class="icon-home icon-white"></i>
+                                    <span class="listslabel">
+                                        [% IF ( mylibraryfirst ) %]
+                                            [% FOREACH BranchesLoo IN BranchesLoop %]
+                                                [% IF (BranchesLoo.selected) %]
+                                                    [% BranchesLoo.branchname %]
+                                                [% END %]
+                                            [% END %]
+                                        [% ELSE %]
+                                            <span id="set-library-label-default">Libraries</span>
+                                        [% END %]
+                                    </span>
+                                    <b class="caret"></b>
+                                </a>
+
+                                <ul class="dropdown-menu" role="menu">
+                                    [% FOREACH BranchesLoo IN BranchesLoop %]
+                                            [% IF (BranchesLoo.selected) %]<li class="active" role="presentation">[% ELSE %]<li role="presentation">[% END %]
+                                                <a role="menuitem" tabindex="-1" href="/cgi-bin/koha/opac-setbranch.pl?newbranch=[% BranchesLoo.value %]">
+                                                    [% BranchesLoo.branchname %]
+                                                </a>
+                                            </li>
+                                    [% END %]
+                                    <li role="presentation">
+                                        <a role="menuitem" tabindex="-1" href="/cgi-bin/koha/opac-setbranch.pl" class="set-search-first-library-clear">
+                                            <i class="icon-remove-circle"></i> Clear selection
+                                        </a>
+                                </ul>
+                            </li>
+                        [% END %]
+
 
                     </ul> <!-- / .nav -->
                     [% IF Koha.Preference( 'virtualshelves' ) == 1 %]<div id="listsDetails"></div>[% END %]

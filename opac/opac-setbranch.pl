@@ -4,7 +4,7 @@
 #
 # Koha is free software; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
-# Foundation; either version 2 of the License, or (at your option) any later
+# Foundation; either version 3 of the License, or (at your option) any later
 # version.
 #
 # Koha is distributed in the hope that it will be useful, but WITHOUT ANY
@@ -15,9 +15,8 @@
 # Koha; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
 # Suite 330, Boston, MA  02111-1307 USA
 
+use Modern::Perl;
 
-use strict;
-use warnings;
 use CGI;
 use C4::Auth qw/:DEFAULT get_session/;
 
@@ -25,17 +24,15 @@ my $input = new CGI;
 
 my $cookie =~ m/CGISESSID=(\w*);.*/;
 my $sessionID = $1;
-my $session = get_session($sessionID);
+my $session   = get_session($sessionID);
 
-if ( $input->param('newbranch') and ($input->param('newbranch') ne $session->param('branch') ))
-{
-    $session->param('mylibraryfirst', $input->param('newbranch'));
-    $session->param('branch',$input->param('newbranch'));
+if ( $input->param('newbranch') ) {
+    $session->param( 'mylibraryfirst', $input->param('newbranch') );
+    $session->param( 'branch',         $input->param('newbranch') );
 }
-elsif ($input->param('newbranch') eq $session->param('branch'))
-{
-    $session->param('mylibraryfirst', undef);
-    $session->param('branch', undef);
+else {
+    $session->param( 'mylibraryfirst', undef );
+    $session->param( 'branch',         undef );
 }
 
 $session->flush;
